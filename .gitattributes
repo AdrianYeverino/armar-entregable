@@ -1,0 +1,8 @@
+# Normalizar finales de linea en el repositorio, y dejar CRLF en el disco de
+# Windows. Los .ps1 se editan en Windows y PowerShell 5.1 espera CRLF.
+* text=auto eol=crlf
+
+# Binarios: que git no intente convertirlos ni diferenciarlos como texto.
+*.docx binary
+*.pdf  binary
+*.png  binary

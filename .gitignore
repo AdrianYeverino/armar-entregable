@@ -1,0 +1,34 @@
+# Datos personales del autor (nombre y matricula). Cada equipo crea el suyo
+# a partir de config.ejemplo.json. Nunca se versiona.
+config.json
+
+# Respaldos manuales previos al repositorio. El historial ahora lo lleva git.
+*.bak
+*.bak-*
+
+# Salidas generadas: se rehacen corriendo el script.
+*.docx
+*.pdf
+!plantillas/*.docx
+salida/
+
+# Temporales de Word y del pipeline
+~$*
+*.tmp
+
+# Notas del vault de Obsidian que quedaron sueltas en esta carpeta y no son
+# parte de la herramienta (credenciales de git, diagnosticos de Dispatch).
+Anexo CLAUDE.md*
+Convencion - Credenciales*
+Diagnostico*
+Protocolo - Git*
+Prueba - Commit*
+
+# Scripts obsoletos en Perl que generaban OpenXML a mano. Se descartaron;
+# la leccion esta en docs/historia.md. Contienen datos personales.
+OBSOLETO-*
+
+# Sistema operativo
+Thumbs.db
+desktop.ini
+.DS_Store

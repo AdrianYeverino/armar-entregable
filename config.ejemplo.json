@@ -1,0 +1,5 @@
+{
+  "_comentario": "Copia este archivo como config.json y pon tus datos. config.json esta en el .gitignore, asi que no se sube al repositorio. Solo lo usa el perfil 'martinez', que imprime nombre y matricula en el encabezado de cada pagina.",
+  "nombre": "Nombre Apellido Apellido",
+  "matricula": "1234567"
+}
