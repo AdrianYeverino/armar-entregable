@@ -132,7 +132,7 @@ El formato se elige con `-Perfil`, no pasando rutas a mano.
 | `fime` | Estándar de la facultad | No | Arial 12 justificado 1.5 | 16 / 14 / 12 |
 | `formemp` | Propia del profesor | **Sí, automático** | Arial 12 justificado 1.5 | **18 / 16 / 14** |
 | `topicos` | Propia del equipo | **Sí, automático** | Arial 12 justificado 1.15 | 16 / 14 / 12 |
-| `lbtssi` | Estándar de FIME, con brigada, hora y columna de inscripción | No | Arial 12 justificado 1.5 | 16 / 14 / 12 |
+| `lbtssi` | Estándar de FIME, con brigada, hora y columna de inscripción | **Sí, automático** | Arial 12 justificado 1.5 | 16 / 14 / 12 |
 
 `-ConPortada` sigue funcionando por compatibilidad: equivale a `-Perfil fime`.
 

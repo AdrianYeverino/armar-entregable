@@ -86,8 +86,8 @@ una plantilla nueva — ver [`plantillas.md`](plantillas.md).
 Más la fila molde `{{C1}} | {{C2}} | {{C3}}` de la tabla de integrantes, que el
 script clona una vez por persona y luego borra.
 
-`portada-formemp.docx` y `portada-topicos.docx` traen además el campo TOC del
-índice automático; el script solo lo refresca.
+`portada-formemp.docx`, `portada-topicos.docx` y `portada-lbtssi.docx` traen además el
+campo TOC del índice automático; el script solo lo refresca.
 
 ## Ejemplo completo
 
