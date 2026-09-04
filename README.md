@@ -132,6 +132,7 @@ El formato se elige con `-Perfil`, no pasando rutas a mano.
 | `fime` | Estándar de la facultad | No | Arial 12 justificado 1.5 | 16 / 14 / 12 |
 | `formemp` | Propia del profesor | **Sí, automático** | Arial 12 justificado 1.5 | **18 / 16 / 14** |
 | `topicos` | Propia del equipo | **Sí, automático** | Arial 12 justificado 1.15 | 16 / 14 / 12 |
+| `lbtssi` | Estándar de FIME, con brigada, hora y columna de inscripción | No | Arial 12 justificado 1.5 | 16 / 14 / 12 |
 
 `-ConPortada` sigue funcionando por compatibilidad: equivale a `-Perfil fime`.
 
@@ -141,7 +142,7 @@ El formato se elige con `-Perfil`, no pasando rutas a mano.
 |---|---|
 | `-Md` *(obligatorio)* | Markdown de entrada |
 | `-Out` *(obligatorio)* | `.docx` de salida. El `.pdf` sale con el mismo nombre |
-| `-Perfil` | `martinez` · `fime` · `formemp` · `topicos` |
+| `-Perfil` | `martinez` · `fime` · `formemp` · `topicos` · `lbtssi` |
 | `-Seccion` | Toma solo lo que está debajo de ese encabezado |
 | `-Encabezado` | Texto del encabezado en el perfil `martinez`. Por omisión, el nombre del archivo |
 | `-BordesTabla` | Línea negra en todos los bordes de todas las tablas |

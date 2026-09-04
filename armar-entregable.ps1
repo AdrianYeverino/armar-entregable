@@ -73,7 +73,7 @@
 param(
   [Parameter(Mandatory=$true)][string]$Md,
   [Parameter(Mandatory=$true)][string]$Out,
-  [ValidateSet("martinez","fime","formemp","topicos")][string]$Perfil = "",
+  [ValidateSet("martinez","fime","formemp","topicos","lbtssi")][string]$Perfil = "",
   [string]$Seccion = "",
   [switch]$ConPortada,
   [string]$Encabezado = "",
@@ -111,6 +111,7 @@ $PERFILES = @{
   "fime"     = @{ portada = $true;  ref = "reference-fime.docx";     plantilla = "portada-fime.docx"    }
   "formemp"  = @{ portada = $true;  ref = "reference-formemp.docx";  plantilla = "portada-formemp.docx" }
   "topicos"  = @{ portada = $true;  ref = "reference-martinez.docx"; plantilla = "portada-topicos.docx" }
+  "lbtssi"   = @{ portada = $true;  ref = "reference-fime.docx";     plantilla = "portada-lbtssi.docx"  }
 }
 $cfg = $PERFILES[$Perfil]
 
@@ -318,6 +319,29 @@ try {
         ,@("{{PLAN}}",      $(if (M "plan")      { "Plan: "      + (M "plan") }      else { "" }))
         ,@("{{CIUDAD}}",    (M "ciudad"))
         ,@("{{FECHA}}",     (M "fecha"))
+      )
+    }
+    elseif ($Perfil -eq "lbtssi") {
+      # Portada del Laboratorio de Temas Selectos de Sistemas Inteligentes: igual
+      # a la estandar de FIME, pero el grupo se llama "Brigada", hay un renglon
+      # extra para la hora y la tabla lleva una cuarta columna, "INSCRITO EN LAB".
+      $fecha = ""
+      if (M "fecha") { $fecha = "SAN NICOLÁS DE LOS GARZA, N.L. A " + (M "fecha").ToUpper() }
+      $equipo = ""; if (M "equipo") { $equipo = "Equipo: " + (M "equipo") }
+      $curso = @()
+      if (M "brigada")   { $curso += "Brigada: "   + (M "brigada") }
+      if (M "grupo")     { $curso += "Grupo: "     + (M "grupo") }
+      if (M "semestre")  { $curso += "Semestre: "  + (M "semestre") }
+      if (M "modalidad") { $curso += "Modalidad: " + (M "modalidad") }
+      $subs = @(
+        ,@("{{MATERIA}}",   (M "materia"))
+        ,@("{{ACTIVIDAD}}", (M "actividad"))
+        ,@("{{TEMA}}",      (M "tema"))
+        ,@("{{EQUIPO}}",    $equipo)
+        ,@("{{DOCENTE}}",   $(if (M "docente") { "Docente: " + (M "docente") } else { "" }))
+        ,@("{{CURSO}}",     ($curso -join " "))
+        ,@("{{HORA}}",      $(if (M "hora") { "Hora: " + (M "hora") } else { "" }))
+        ,@("{{FECHA}}",     $fecha)
       )
     }
     else {

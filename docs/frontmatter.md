@@ -13,22 +13,23 @@ funcionando.
 
 ## Tabla de campos
 
-| Campo | `fime` | `formemp` | `topicos` | `martinez` |
-|---|:--:|:--:|:--:|:--:|
-| `materia` | ✓ | ✓ | ✓ | — |
-| `actividad` | ✓ | ✓ | ✓ | — |
-| `tema` | ✓ | ✓ | — | — |
-| `equipo` | ✓ | ✓ | ✓ | — |
-| `docente` | ✓ | ✓ | ✓ *(como Instructor)* | — |
-| `grupo` | ✓ | ✓ | ✓ | — |
-| `semestre` | ✓ | ✓ | ✓ | — |
-| `modalidad` | ✓ | — | — | — |
-| `plan` | — | ✓ | — | — |
-| `ciudad` | — | ✓ | ✓ | — |
-| `hora` | — | — | ✓ | — |
-| `frecuencia` | — | — | ✓ | — |
-| `fecha` | ✓ | ✓ | ✓ | — |
-| `integrantes` | ✓ | ✓ | ✓ | — |
+| Campo | `fime` | `formemp` | `topicos` | `lbtssi` | `martinez` |
+|---|:--:|:--:|:--:|:--:|:--:|
+| `materia` | ✓ | ✓ | ✓ | ✓ | — |
+| `actividad` | ✓ | ✓ | ✓ | ✓ | — |
+| `tema` | ✓ | ✓ | — | ✓ | — |
+| `equipo` | ✓ | ✓ | ✓ | ✓ | — |
+| `docente` | ✓ | ✓ | ✓ *(como Instructor)* | ✓ | — |
+| `brigada` | — | — | — | ✓ | — |
+| `grupo` | ✓ | ✓ | ✓ | ✓ | — |
+| `semestre` | ✓ | ✓ | ✓ | ✓ | — |
+| `modalidad` | ✓ | — | — | ✓ | — |
+| `plan` | — | ✓ | — | — | — |
+| `ciudad` | — | ✓ | ✓ | — | — |
+| `hora` | — | — | ✓ | ✓ | — |
+| `frecuencia` | — | — | ✓ | — | — |
+| `fecha` | ✓ | ✓ | ✓ | ✓ | — |
+| `integrantes` | ✓ | ✓ | ✓ | ✓ | — |
 
 El perfil `martinez` no usa portada: el encabezado sale de `config.json` y del
 parámetro `-Encabezado`.
@@ -42,6 +43,7 @@ No todo va tal cual a la portada. Estas son las excepciones:
 | `fime` | `grupo`, `semestre` y `modalidad` se juntan en **un solo renglón** (`{{CURSO}}`), cada uno con su etiqueta. La fecha va en mayúsculas y a la derecha |
 | `formemp` | Van en **renglones separados**, cada uno con su etiqueta (`Grupo: `, `Docente: `, `Semestre: `, `Plan: `) |
 | `topicos` | `ciudad` y `fecha` se unen como `Ciudad, a fecha`, centrado y en minúsculas. `grupo`, `hora` y `frecuencia` comparten renglón |
+| `lbtssi` | Igual que `fime`, pero `brigada` va antes que `grupo` en el renglón de curso y `hora` lleva su propio renglón debajo |
 
 `equipo: 3` se imprime como `Equipo 3`; el número solo, en el frontmatter.
 
@@ -58,6 +60,17 @@ integrantes:
 La tabla de la portada **crece sola**: tres integrantes dan cuatro filas
 (encabezado más tres). No hay que tocar la plantilla.
 
+`portada-lbtssi.docx` lleva una cuarta columna, `INSCRITO EN LAB`, así que en
+ese perfil cada renglón trae un dato más:
+
+```yaml
+integrantes:
+  - 1234567 | Nombre Apellido Apellido | ITS | SI
+```
+
+Las columnas de más que no se llenen quedan vacías, y los datos de más que no
+tengan columna se ignoran. El mismo `.md` sirve para los dos casos.
+
 ## Marcadores de cada plantilla
 
 Esto es lo que hay dentro de los `portada-*.docx`. Solo importa si vas a crear
@@ -68,6 +81,7 @@ una plantilla nueva — ver [`plantillas.md`](plantillas.md).
 | `portada-fime.docx` | `{{MATERIA}}` `{{ACTIVIDAD}}` `{{TEMA}}` `{{EQUIPO}}` `{{DOCENTE}}` `{{CURSO}}` `{{FECHA}}` |
 | `portada-formemp.docx` | `{{MATERIA}}` `{{ACTIVIDAD}}` `{{TEMA}}` `{{EQUIPO}}` `{{GRUPO}}` `{{DOCENTE}}` `{{SEMESTRE}}` `{{PLAN}}` `{{CIUDAD}}` `{{FECHA}}` |
 | `portada-topicos.docx` | `{{MATERIA}}` `{{ACTIVIDAD}}` `{{INSTRUCTOR}}` `{{SEMESTRE}}` `{{GRUPO}}` `{{HORA}}` `{{FRECUENCIA}}` `{{EQUIPO}}` `{{FECHA}}` |
+| `portada-lbtssi.docx` | `{{MATERIA}}` `{{ACTIVIDAD}}` `{{TEMA}}` `{{DOCENTE}}` `{{EQUIPO}}` `{{CURSO}}` `{{HORA}}` `{{FECHA}}` |
 
 Más la fila molde `{{C1}} | {{C2}} | {{C3}}` de la tabla de integrantes, que el
 script clona una vez por persona y luego borra.
