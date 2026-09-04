@@ -59,7 +59,7 @@ automatización COM de Word.
 ## Instalación en un equipo nuevo
 
 ```powershell
-git clone https://github.com/<usuario>/armar-entregable.git C:\FIME-Herramientas
+git clone https://github.com/AdrianYeverino/armar-entregable.git C:\FIME-Herramientas
 cd C:\FIME-Herramientas
 .\instalar.ps1
 ```
