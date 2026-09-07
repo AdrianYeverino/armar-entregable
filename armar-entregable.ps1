@@ -26,6 +26,12 @@
 #             Grupo | Hora | Frecuencia, equipo y tabla Estudiante/Matricula/Carrera.
 #             La fecha va centrada y en minusculas, precedida de "Ciudad
 #             Universitaria, ". Usa -BordesTabla.
+#   lbtssi    portada del Laboratorio de Temas Sel. de Sistemas Inteligentes.
+#             Es la de FIME con tres cambios: el grupo se llama Brigada, la hora
+#             lleva renglon propio y la tabla de integrantes tiene una cuarta
+#             columna, INSCRITO EN LAB. Frontmatter: brigada, hora, y cada
+#             integrante con cuatro campos (matricula | nombre | carrera | SI/NO).
+#             Estilos: los mismos de fime. Usa -BordesTabla -TablaCompacta.
 #   formemp   portada del M.A. Guillermo Marin Rangel, con indice automatico.
 #             Estilos: Arial 12 justificado 1.5, titulos 18/16/14.
 #             Ver "Formato - M.A. Guillermo Marin Rangel".
@@ -73,7 +79,7 @@
 param(
   [Parameter(Mandatory=$true)][string]$Md,
   [Parameter(Mandatory=$true)][string]$Out,
-  [ValidateSet("martinez","fime","formemp","topicos")][string]$Perfil = "",
+  [ValidateSet("martinez","fime","formemp","topicos","lbtssi")][string]$Perfil = "",
   [string]$Seccion = "",
   [switch]$ConPortada,
   [string]$Encabezado = "",
@@ -111,6 +117,7 @@ $PERFILES = @{
   "fime"     = @{ portada = $true;  ref = "reference-fime.docx";     plantilla = "portada-fime.docx"    }
   "formemp"  = @{ portada = $true;  ref = "reference-formemp.docx";  plantilla = "portada-formemp.docx" }
   "topicos"  = @{ portada = $true;  ref = "reference-martinez.docx"; plantilla = "portada-topicos.docx" }
+  "lbtssi"   = @{ portada = $true;  ref = "reference-fime.docx";     plantilla = "portada-lbtssi.docx"  }
 }
 $cfg = $PERFILES[$Perfil]
 
@@ -283,7 +290,30 @@ try {
     if (M "semestre")  { $curso += "Semestre: "  + (M "semestre") }
     if (M "modalidad") { $curso += "Modalidad: " + (M "modalidad") }
 
-    if ($Perfil -eq "topicos") {
+    if ($Perfil -eq "lbtssi") {
+      # Portada del Laboratorio de Temas Sel. de Sistemas Inteligentes. Es la de
+      # FIME con tres diferencias: el grupo se llama Brigada, hay un renglon
+      # propio para la hora, y la tabla de integrantes lleva una cuarta columna
+      # (INSCRITO EN LAB) porque no todos los del equipo estan inscritos al
+      # laboratorio. El frontmatter usa "brigada:" y "hora:".
+      $curso = @()
+      if (M "brigada")   { $curso += "Brigada: "   + (M "brigada") }
+      if (M "semestre")  { $curso += "Semestre: "  + (M "semestre") }
+      if (M "modalidad") { $curso += "Modalidad: " + (M "modalidad") }
+      $fecha = ""
+      if (M "fecha") { $fecha = "SAN NICOLÁS DE LOS GARZA, N.L. A " + (M "fecha").ToUpper() }
+      $equipo = ""; if (M "equipo") { $equipo = "Equipo: " + (M "equipo") }
+      $subs = @(
+        ,@("{{MATERIA}}",   (M "materia"))
+        ,@("{{ACTIVIDAD}}", (M "actividad"))
+        ,@("{{DOCENTE}}",   $(if (M "docente") { "Docente: " + (M "docente") } else { "" }))
+        ,@("{{EQUIPO}}",    $equipo)
+        ,@("{{CURSO}}",     ($curso -join " "))
+        ,@("{{HORA}}",      $(if (M "hora") { "Hora: " + (M "hora") } else { "" }))
+        ,@("{{FECHA}}",     $fecha)
+      )
+    }
+    elseif ($Perfil -eq "topicos") {
       # Esta portada no lleva tema ni renglon de curso unico: el grupo, la hora
       # y la frecuencia van en un solo renglon con sus etiquetas en negrita, ya
       # puestas en la plantilla. La fecha va tal cual, sin mayusculas.
