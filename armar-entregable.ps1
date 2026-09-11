@@ -521,7 +521,10 @@ try {
   if (-not $SinPdf) {
     Write-Host "[4/4] exportando PDF..."
     $pdf = [System.IO.Path]::ChangeExtension($Out, ".pdf")
-    $doc.ExportAsFixedFormat($pdf, 17)
+    # El parametro 11 es CreateBookmarks: con 1 (wdExportCreateHeadingBookmarks)
+    # los Titulo 1/2/3 salen como marcadores en el panel de navegacion del PDF,
+    # ademas del indice con hipervinculos que ya viene del campo TOC.
+    $doc.ExportAsFixedFormat($pdf, 17, $false, 0, 0, 0, 0, 0, $true, $true, 1)
   }
   $doc.Close($false)
   Write-Host ""
