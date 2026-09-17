@@ -129,9 +129,10 @@ El formato se elige con `-Perfil`, no pasando rutas a mano.
 | Perfil | Portada | Índice | Cuerpo | Títulos |
 |---|---|---|---|---|
 | `martinez` *(por omisión)* | No, encabezado | No | Arial 12 justificado **1.15** | 16 / 14 / 12 |
-| `fime` | Estándar de la facultad | No | Arial 12 justificado 1.5 | 16 / 14 / 12 |
+| `fime` | Estándar de la facultad | **Sí, automático** | Arial 12 justificado 1.5 | 16 / 14 / 12 |
 | `formemp` | Propia del profesor | **Sí, automático** | Arial 12 justificado 1.5 | **18 / 16 / 14** |
 | `topicos` | Propia del equipo | **Sí, automático** | Arial 12 justificado 1.15 | 16 / 14 / 12 |
+| `lbtssi` | Estándar de FIME, con brigada, hora y columna de inscripción | **Sí, automático** | Arial 12 justificado 1.5 | 16 / 14 / 12 |
 | `integrador` | Del equipo 5 de Proyecto Integrador I (recortada de su Fase 4) | **Sí, automático** | Arial 12 justificado 1.5 | Título Play 28 · Play azul 20 / 16 · Aptos 14 |
 
 `integrador` además convierte `==texto==` en resaltado amarillo (para dejar
@@ -149,7 +150,7 @@ Las dos plantillas se regeneran con
 |---|---|
 | `-Md` *(obligatorio)* | Markdown de entrada |
 | `-Out` *(obligatorio)* | `.docx` de salida. El `.pdf` sale con el mismo nombre |
-| `-Perfil` | `martinez` · `fime` · `formemp` · `topicos` |
+| `-Perfil` | `martinez` · `fime` · `formemp` · `topicos` · `lbtssi` |
 | `-Seccion` | Toma solo lo que está debajo de ese encabezado |
 | `-Encabezado` | Texto del encabezado en el perfil `martinez`. Por omisión, el nombre del archivo |
 | `-BordesTabla` | Línea negra en todos los bordes de todas las tablas |
@@ -265,7 +266,7 @@ plantillas/
 ├── reference-martinez.docx   ← SOLO estilos: 1.15, títulos 16/14/12
 ├── reference-fime.docx       ← SOLO estilos: 1.5,  títulos 16/14/12
 ├── reference-formemp.docx    ← SOLO estilos: 1.5,  títulos 18/16/14
-├── portada-fime.docx         ← portada estándar, marcadores {{MATERIA}} etc.
+├── portada-fime.docx         ← portada estándar + índice automático
 ├── portada-formemp.docx      ← portada del profesor + índice automático
 └── portada-topicos.docx      ← portada del equipo + índice automático
 ```
