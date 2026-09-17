@@ -97,6 +97,25 @@ escudos son los mismos y así conservaron su posición y tamaño originales.
 
 Si el formato nuevo comparte los logos, ese es el camino más seguro.
 
+## Portada a partir de un Word hecho en Google Docs (perfil integrador)
+
+`portada-integrador.docx` y `reference-integrador.docx` no se editaron a mano:
+los genera `herramientas\crear-plantillas-integrador.ps1` a partir de la Fase 4
+que armó el equipo. El script borra el cuerpo de la sección 2, deja un párrafo
+`{{TITULO}}` en estilo Título, cambia el subtítulo y la fecha por marcadores y
+redefine los estilos. Tres trampas que aparecieron:
+
+- **Los estilos se piden por su constante** (`-2` es Título 1, `-63` es Título),
+  no por nombre: en un Word en español "Heading 1" no existe.
+- **El campo TOC de Google Docs filtra por nombres en inglés**
+  (`\t "Heading 1,1,..."`), así que en Word en español el índice sale vacío.
+  Se reemplaza por `TOC \o "1-3" \h \z \u`.
+- **No se toca el estilo Normal:** la tabla de integrantes lo hereda y con 1.5
+  la portada se desborda a una segunda hoja.
+
+La fuente Play de los títulos no viene con Windows. Se instaló por usuario
+desde Google Fonts y el perfil guarda los documentos con fuentes incrustadas.
+
 ## Los logos
 
 `logos/logo-uanl.png` y `logos/logo-fime.png` están en el repositorio solo por

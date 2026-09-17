@@ -132,6 +132,14 @@ El formato se elige con `-Perfil`, no pasando rutas a mano.
 | `fime` | Estándar de la facultad | No | Arial 12 justificado 1.5 | 16 / 14 / 12 |
 | `formemp` | Propia del profesor | **Sí, automático** | Arial 12 justificado 1.5 | **18 / 16 / 14** |
 | `topicos` | Propia del equipo | **Sí, automático** | Arial 12 justificado 1.15 | 16 / 14 / 12 |
+| `integrador` | Del equipo 5 de Proyecto Integrador I (recortada de su Fase 4) | **Sí, automático** | Arial 12 justificado 1.5 | Título Play 28 · Play azul 20 / 16 · Aptos 14 |
+
+`integrador` además convierte `==texto==` en resaltado amarillo (para dejar
+instrucciones al equipo dentro del Word), incrusta la fuente Play y numera las
+páginas desde el cuerpo, igual que el documento original. El "Fase N" grande
+sale de `titulo:` en el bloque `portada:`, junto con `actividad:` y `fecha:`.
+Las dos plantillas se regeneran con
+`herramientas\crear-plantillas-integrador.ps1 -Origen "...\Fase 4.docx"`.
 
 `-ConPortada` sigue funcionando por compatibilidad: equivale a `-Perfil fime`.
 
@@ -146,6 +154,8 @@ El formato se elige con `-Perfil`, no pasando rutas a mano.
 | `-Encabezado` | Texto del encabezado en el perfil `martinez`. Por omisión, el nombre del archivo |
 | `-BordesTabla` | Línea negra en todos los bordes de todas las tablas |
 | `-TablaCompacta` | Celdas a Arial 10, alineadas a la izquierda y arriba, encabezado repetido entre páginas |
+| `-TablaIntegrador` | Tablas como las del equipo de Proyecto Integrador: encabezado azul marino #073763 con letra blanca, bordes gris #c4c7c5, Arial 10 |
+| `-AltoMaxImagen` | Alto máximo de cada imagen en puntos (312 por omisión; 500 o más para diagramas) |
 | `-SinPdf` | Solo genera el `.docx` |
 | `-Referencia` | Un `reference-*.docx` distinto al del perfil |
 | `-Plantilla` | Una portada distinta a la del perfil |
