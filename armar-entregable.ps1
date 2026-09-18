@@ -221,16 +221,24 @@ function M([string]$k) {
 # ---------- 1b. recortar la seccion pedida -----------------------------------
 $subir = 0
 if ($Seccion) {
-  $ini = -1; $nivel = 0
+  # Un bloque de codigo puede traer renglones que empiezan con "#" (un
+  # comentario de Python, una directiva de C). Si se leen como encabezado, el
+  # recorte de la seccion se corta ahi y el entregable sale truncado sin avisar.
+  # Por eso las dos busquedas saltan lo que este dentro de un cerco ``` o ~~~.
+  $ini = -1; $nivel = 0; $cerco = $false
   for ($k = 0; $k -lt $cuerpo.Count; $k++) {
+    if ($cuerpo[$k] -match '^\s*(```|~~~)') { $cerco = -not $cerco; continue }
+    if ($cerco) { continue }
     if ($cuerpo[$k] -match '^(#+)\s+(.*)$') {
       if ($Matches[2].Trim() -eq $Seccion.Trim()) { $ini = $k; $nivel = $Matches[1].Length; break }
     }
   }
   if ($ini -lt 0) { throw "No encuentro la seccion '$Seccion' en $Md" }
 
-  $fin = $cuerpo.Count
+  $fin = $cuerpo.Count; $cerco = $false
   for ($k = $ini + 1; $k -lt $cuerpo.Count; $k++) {
+    if ($cuerpo[$k] -match '^\s*(```|~~~)') { $cerco = -not $cerco; continue }
+    if ($cerco) { continue }
     if ($cuerpo[$k] -match '^(#+)\s+' -and $Matches[1].Length -le $nivel) { $fin = $k; break }
   }
   if ($fin -le $ini + 1) { throw "La seccion '$Seccion' esta vacia" }
@@ -286,7 +294,8 @@ $tmpDoc = [System.IO.Path]::GetTempFileName() + ".docx"
 $cuerpo -join "`n" | Out-File -FilePath $tmpMd -Encoding utf8
 
 Write-Host "[1/4] pandoc: markdown -> docx con tus estilos..."
-$argsPandoc = @($tmpMd, "-f", "markdown+mark", "-o", $tmpDoc, "--reference-doc=$Referencia", "--wrap=none")
+$mdDir = Split-Path -Parent $Md
+$argsPandoc = @($tmpMd, "-f", "markdown+mark", "-o", $tmpDoc, "--reference-doc=$Referencia", "--wrap=none", "--resource-path=$mdDir")
 if ($subir -gt 0) {
   $argsPandoc += "--shift-heading-level-by=-$subir"
   Write-Host ("      encabezados subidos " + $subir + " nivel(es): el primero queda como Titulo 1")
