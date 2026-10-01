@@ -439,8 +439,12 @@ try {
     # integrador usa parrafos vacios a proposito para acomodar los logos, y
     # no tiene campos opcionales, asi que ahi no se toca.
     for ($i = $doc.Paragraphs.Count; $i -ge 1 -and $Perfil -ne "integrador"; $i--) {
-      $t = $doc.Paragraphs.Item($i).Range.Text.Trim()
-      if ($t -eq "" -and $doc.Paragraphs.Item($i).Range.Tables.Count -eq 0) {
+      $raw = $doc.Paragraphs.Item($i).Range.Text
+      $t = $raw.Trim()
+      # Trim() tambien quita el caracter de salto de pagina (chr 12), asi que
+      # un parrafo que solo trae el salto entre portada e indice parecia vacio
+      # y se borraba: el indice quedaba pegado a la portada.
+      if ($t -eq "" -and $raw -notmatch "\f" -and $doc.Paragraphs.Item($i).Range.Tables.Count -eq 0) {
         $prev = if ($i -gt 1) { $doc.Paragraphs.Item($i-1).Range.Text.Trim() } else { "x" }
         if ($prev -eq "") { $doc.Paragraphs.Item($i).Range.Delete() | Out-Null }
       }
