@@ -501,13 +501,21 @@ try {
     $rng = $doc.Range($fin, $fin)
     # agronomia pide que la numeracion de pagina aparezca despues del indice,
     # asi que ahi el corte es de SECCION y no de pagina: el cuerpo queda en una
-    # seccion aparte con su propio pie de pagina. lbtssi tambien numera desde
-    # ahi. El resto de los perfiles no numeran, asi que les basta el salto de
-    # pagina.
-    if ($Perfil -eq "agronomia" -or $Perfil -eq "lbtssi") { $rng.InsertBreak(2) }  # wdSectionBreakNextPage
-    else                                                  { $rng.InsertBreak(7) }  # wdPageBreak
+    # seccion aparte con su propio pie de pagina. lbtssi y formemp tambien
+    # numeran desde ahi. El resto de los perfiles no numeran, asi que les basta
+    # el salto de pagina.
+    if ($Perfil -in @("agronomia", "lbtssi", "formemp")) { $rng.InsertBreak(2) }  # wdSectionBreakNextPage
+    else                                                 { $rng.InsertBreak(7) }  # wdPageBreak
     $rng.Collapse(0)
     $rng.InsertFile($tmpDoc)
+    # InsertFile deja un parrafo vacio al final. Si la ultima pagina queda
+    # llena, ese parrafo se pasa solo a una hoja nueva y el documento termina
+    # con una pagina en blanco. Se borran los parrafos vacios del final.
+    for ($k = 0; $k -lt 5; $k++) {
+      $ult = $doc.Paragraphs.Item($doc.Paragraphs.Count)
+      if ($ult.Range.Text.Trim() -ne "" -or $ult.Range.InlineShapes.Count -gt 0 -or $ult.Range.Tables.Count -gt 0) { break }
+      try { $doc.Range($ult.Range.Start - 1, $ult.Range.End - 1).Delete() | Out-Null } catch { break }
+    }
     }
 
     if ($Perfil -eq "agronomia" -and $doc.Sections.Count -ge 2) {
@@ -528,10 +536,12 @@ try {
       Write-Host "      numeracion de pagina desde la seccion 2 (despues del indice)"
     }
 
-    if ($Perfil -eq "lbtssi" -and $doc.Sections.Count -ge 2) {
+    if (($Perfil -eq "lbtssi" -or $Perfil -eq "formemp") -and $doc.Sections.Count -ge 2) {
       # El equipo del laboratorio numera en el PIE de pagina, a la derecha, y la
       # cuenta arranca en 1 en el cuerpo: portada e indice no cuentan. Asi quedo
-      # la version que el equipo entrego de la Practica 2.1. Se desliga el pie
+      # la version que el equipo entrego de la Practica 2.1. formemp numera
+      # igual desde el 2026-10-01, a peticion del usuario, y el indice muestra
+      # esa misma numeracion porque se actualiza despues. Se desliga el pie
       # antes de vaciar el de la seccion 1, o el vaciado se hereda.
       $pie = $doc.Sections.Item(2).Footers.Item(1)
       $pie.LinkToPrevious = $false
