@@ -587,8 +587,13 @@ try {
   # mismo justificado del cuerpo, y en una columna angosta eso estira las
   # palabras hasta hacerlas ilegibles. Aqui se alinean a la izquierda, se bajan
   # a 10 pt y la tabla se ajusta al ancho de la pagina.
+  # Se salta la tabla de integrantes de la portada, que tiene su propio formato.
+  # Las filas no se parten, pero la tabla si puede seguir en la pagina siguiente
+  # (con el encabezado repetido): obligarla a ir completa en una hoja deja
+  # media pagina en blanco antes de cada tabla larga.
   if ($TablaCompacta -and $doc.Tables.Count -gt 0) {
-    foreach ($ti in 1..$doc.Tables.Count) {
+    $iniT = if ($cfg.portada) { 2 } else { 1 }
+    for ($ti = $iniT; $ti -le $doc.Tables.Count; $ti++) {
       $tb = $doc.Tables.Item($ti)
       $tb.Range.Font.Name = "Arial"
       $tb.Range.Font.Size = 10
@@ -601,8 +606,20 @@ try {
       $tb.Rows.Item(1).HeadingFormat = $true      # repetir encabezado al cambiar de pagina
       $tb.Rows.Item(1).Range.Font.Bold = $true
       $tb.Rows.AllowBreakAcrossPages = $false
+      $tb.TopPadding = 2; $tb.BottomPadding = 2
+      # el encabezado no se queda solo al final de una pagina
+      $tb.Rows.Item(1).Range.ParagraphFormat.KeepWithNext = $true
+      # el parrafo que presenta la tabla va con ella, y el que sigue no queda pegado al borde
+      try {
+        $antes = $tb.Range.Paragraphs.Item(1).Previous()
+        if ($antes -ne $null -and $antes.Range.Tables.Count -eq 0) { $antes.KeepWithNext = $true }
+        $sig = $doc.Range($tb.Range.End, $tb.Range.End)
+        if ($sig.Paragraphs.Count -gt 0 -and $sig.Paragraphs.Item(1).Range.Tables.Count -eq 0) {
+          $sig.Paragraphs.Item(1).SpaceBefore = 10
+        }
+      } catch { }
     }
-    Write-Host ("      formato compacto aplicado a " + $doc.Tables.Count + " tablas")
+    Write-Host ("      formato compacto aplicado a " + ($doc.Tables.Count - $iniT + 1) + " tablas")
   }
 
   # Tablas del equipo de Proyecto Integrador: encabezado #073763 con letra
@@ -683,8 +700,9 @@ try {
       $s.LockAspectRatio = -1
       if ($s.Width -gt $maxW)  { $s.Width  = $maxW; $ajust++ }
       if ($s.Height -gt $maxH) { $s.Height = $maxH; $ajust++ }
-      # en integrador las capturas y diagramas van centrados
-      if ($Perfil -eq "integrador") { $s.Range.ParagraphFormat.Alignment = 1 }
+      # las capturas y diagramas van centrados en todos los perfiles; sin esto
+      # heredan el justificado del cuerpo y quedan pegados al margen izquierdo
+      $s.Range.ParagraphFormat.Alignment = 1
     }
     if ($ajust -gt 0) { Write-Host ("      $ajust imagenes reescaladas al ancho de columna") }
   }
