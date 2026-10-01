@@ -657,6 +657,9 @@ try {
           $antes.Range.Delete() | Out-Null
         }
       }
+      # el parrafo que presenta la tabla ("son los siguientes:") va con ella
+      $intro = $tb.Range.Paragraphs.Item(1).Previous()
+      if ($intro -ne $null -and $intro.Range.Tables.Count -eq 0) { $intro.KeepWithNext = $true }
       $enc = $tb.Rows.Item(1)
       $enc.Shading.BackgroundPatternColor = 0xD9D9D9    # gris claro
       $nueva = $tb.Rows.Add($enc)                        # fila nueva arriba del encabezado
