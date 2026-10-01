@@ -106,6 +106,7 @@ param(
   [switch]$SinPdf,
   [switch]$BordesTabla,
   [switch]$TablaCompacta,
+  [switch]$TituloTabla,
   # tablas como las del equipo de Proyecto Integrador: encabezado azul marino
   # con letra blanca, bordes gris claro, 10 pt
   [switch]$TablaIntegrador
@@ -630,6 +631,53 @@ try {
       } catch { }
     }
     Write-Host ("      formato compacto aplicado a " + ($doc.Tables.Count - $iniT + 1) + " tablas")
+  }
+
+  # Titulo numerado dentro de cada tabla. En el markdown el titulo se escribe
+  # con "Table: Texto" antes de la tabla; pandoc lo deja como parrafo "Table
+  # Caption" arriba de ella. Aqui ese parrafo se convierte en una primera fila
+  # combinada, centrada y en negrita, que dice "Tabla N. Texto", y la fila de
+  # encabezado se sombrea en gris claro para distinguirla del contenido. Las
+  # dos filas se repiten si la tabla sigue en la pagina siguiente. Se salta la
+  # tabla de integrantes de la portada.
+  if ($TituloTabla -and $doc.Tables.Count -gt 0) {
+    $iniTit = if ($cfg.portada) { 2 } else { 1 }
+    $num = 0
+    for ($ti = $iniTit; $ti -le $doc.Tables.Count; $ti++) {
+      $tb = $doc.Tables.Item($ti)
+      $num++
+      $texto = "Tabla $num"
+      $antes = $tb.Range.Paragraphs.Item(1).Previous()
+      if ($antes -ne $null) {
+        $nomEst = ""
+        try { $nomEst = $antes.Style.NameLocal } catch { }
+        if ($nomEst -eq "Table Caption") {
+          $cap = $antes.Range.Text.Trim()
+          if ($cap) { $texto = "Tabla $num. $cap" }
+          $antes.Range.Delete() | Out-Null
+        }
+      }
+      $enc = $tb.Rows.Item(1)
+      $enc.Shading.BackgroundPatternColor = 0xD9D9D9    # gris claro
+      $nueva = $tb.Rows.Add($enc)                        # fila nueva arriba del encabezado
+      $nueva.Cells.Merge()
+      $c = $tb.Rows.Item(1).Range
+      $c.Text = $texto
+      $c.Font.Bold = $true
+      $c.Font.Size = 11
+      $c.ParagraphFormat.Alignment = 1                   # centrado
+      $c.ParagraphFormat.SpaceBefore = 3
+      $c.ParagraphFormat.SpaceAfter = 3
+      $c.ParagraphFormat.KeepWithNext = $true
+      $tb.Rows.Item(1).Shading.BackgroundPatternColor = 0xF2F2F2
+      $tb.Rows.Item(1).HeadingFormat = $true
+      $tb.Rows.Item(2).HeadingFormat = $true
+      if ($BordesTabla) {
+        $tb.Borders.InsideLineStyle = 1; $tb.Borders.OutsideLineStyle = 1
+        $tb.Borders.InsideColor = 0; $tb.Borders.OutsideColor = 0
+      }
+    }
+    Write-Host ("      titulo numerado en " + $num + " tablas")
   }
 
   # Tablas del equipo de Proyecto Integrador: encabezado #073763 con letra
