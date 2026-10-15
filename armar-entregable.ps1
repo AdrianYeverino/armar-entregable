@@ -569,12 +569,28 @@ try {
     $hdr.Text = "$tarea`t$NOMBRE`t$MATRIC"
     $hdr.Font.Name = "Arial"; $hdr.Font.Size = 10; $hdr.Font.Bold = $false
     $hdr.ParagraphFormat.Alignment = 0
-    # tabulaciones explicitas: tarea a la izquierda, nombre centrado, matricula a la derecha.
-    # Sin esto los tres datos quedan pegados con la tabulacion por defecto.
+    # Tabulaciones explicitas, todo en un solo renglon: tarea a la izquierda,
+    # matricula a la derecha y el nombre centrado... salvo que la tarea sea
+    # larga y se le encime. Con una tabulacion centrada fija, un titulo de mas
+    # de ~30 letras quedaba pegado al nombre ("busquedaJesus") o mandaba los
+    # datos a un segundo renglon. Aqui se mide cada bloque en Arial 10 y el
+    # nombre se corre a la derecha lo justo para no tocar el titulo.
     $ancho = $doc.PageSetup.PageWidth - $doc.PageSetup.LeftMargin - $doc.PageSetup.RightMargin
+    Add-Type -AssemblyName System.Drawing
+    $gfx = [System.Drawing.Graphics]::FromImage((New-Object System.Drawing.Bitmap 1, 1))
+    $gfx.PageUnit = [System.Drawing.GraphicsUnit]::Point
+    $fnt = New-Object System.Drawing.Font("Arial", 10)
+    $med = { param($t) $gfx.MeasureString($t, $fnt, [int]::MaxValue, [System.Drawing.StringFormat]::GenericTypographic).Width }
+    $wTarea = & $med $tarea; $wNombre = & $med $NOMBRE; $wMatric = & $med $MATRIC
+    $gfx.Dispose(); $fnt.Dispose()
+    $hueco = 12                                       # separacion minima entre bloques, en puntos
+    $posNombre = [Math]::Max(($ancho - $wNombre) / 2, $wTarea + $hueco)
+    if ($posNombre + $wNombre + $hueco + $wMatric -gt $ancho) {
+      Write-Warning ("El titulo del encabezado es demasiado largo para un renglon (" + [int]$wTarea + " pt): acorta -Encabezado.")
+    }
     $pf = $hdr.ParagraphFormat
     $pf.TabStops.ClearAll()
-    $null = $pf.TabStops.Add(($ancho / 2), 1)   # 1 = wdAlignTabCenter
+    $null = $pf.TabStops.Add($posNombre, 0)     # 0 = wdAlignTabLeft
     $null = $pf.TabStops.Add($ancho, 2)         # 2 = wdAlignTabRight
   }
 
